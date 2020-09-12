@@ -1,1 +1,1 @@
-web: uvicorn cotacol.main:app --port 5000
+web: gunicorn -b :5000 -k uvicorn.workers.UvicornWorker cotacol.main:app

@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from . import settings
@@ -20,9 +19,6 @@ app.add_middleware(
 )
 app.add_middleware(GZipMiddleware)
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
-
-if not settings.DEBUG:
-    app.add_middleware(HTTPSRedirectMiddleware)
 
 # register routers
 
