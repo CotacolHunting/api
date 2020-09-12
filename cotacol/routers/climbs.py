@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("/cotacol.geojson", summary="Download GeoJSON file")
-def geojson(db: Session = Depends(get_db)):
+async def geojson(db: Session = Depends(get_db)):
     """
     Returns a GeoJSON response with all COTACOL climbs as features.
     """
@@ -22,7 +22,7 @@ def geojson(db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=List[schemas.ClimbList], summary="List all climbs")
-def list_climbs(db: Session = Depends(get_db)):
+async def list_climbs(db: Session = Depends(get_db)):
     """
     Returns the full list of COTACOL climbs. The climbs are returned ordered by the COTACOL id,
     and they don't include the full list of coordinates, just a polyline.
@@ -31,7 +31,7 @@ def list_climbs(db: Session = Depends(get_db)):
 
 
 @router.get("/{climb_id}/", response_model=schemas.Climb, summary="Retrieve a climb")
-def get_climb(climb_id: schemas.CotacolId, db: Session = Depends(get_db)):
+async def get_climb(climb_id: schemas.CotacolId, db: Session = Depends(get_db)):
     """
     Retrieves the details of a COTACOL climb with all the information, including coordinates and elevation.
     """
@@ -39,7 +39,7 @@ def get_climb(climb_id: schemas.CotacolId, db: Session = Depends(get_db)):
 
 
 @router.patch("/{climb_id}/", response_model=schemas.Climb, summary="Update a climb")
-def update_climb(
+async def update_climb(
     climb_id: schemas.CotacolId,
     climb: schemas.ClimbUpdate,
     current_user: models.User = Security(get_user_from_token, scopes=["write"]),

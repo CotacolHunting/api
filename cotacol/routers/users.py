@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get("/me/", response_model=schemas.User, summary="Retrieve user information")
-def get_current_user(current_user: models.User = Depends(get_user_from_token)):
+async def get_current_user(current_user: models.User = Depends(get_user_from_token)):
     """
     Retrieves the details of the current user (authenticated).
     """
@@ -18,7 +18,7 @@ def get_current_user(current_user: models.User = Depends(get_user_from_token)):
 
 
 @router.patch("/me/", response_model=schemas.User, summary="Update user information")
-def update_user(
+async def update_user(
     user: schemas.UserUpdate, current_user: models.User = Depends(get_user_from_token), db: Session = Depends(get_db),
 ):
     """

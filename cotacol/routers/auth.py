@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/token/", response_model=schemas.Token, summary="Generate a JWT token")
-def validate(provider: schemas.Provider, token: str, request: Request, db: Session = Depends(get_db)):
+async def validate(provider: schemas.Provider, token: str, request: Request, db: Session = Depends(get_db)):
     """
     Exchange a (provider) token for a COTACOL specific JWT access_token.
     """

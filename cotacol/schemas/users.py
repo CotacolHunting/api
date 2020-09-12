@@ -17,6 +17,7 @@ class UserUpdate(UserBase):
 class User(UserBase):
     username: str
     full_name: str
+    profile_picture: str
     date_joined: Optional[datetime]
     is_staff: bool
 

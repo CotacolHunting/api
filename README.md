@@ -26,9 +26,6 @@ Running the server
 
     $ uvicorn cotacol.main:app
 
-There is an environment variable called `FLASK_ENV` that has to be set to `development`
-if you want to run Flask in debug mode with autoreload
-
 Running tests
 -------------
 
