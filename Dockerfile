@@ -6,7 +6,6 @@ RUN apt-get update && \
 
 WORKDIR /app
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir -q gunicorn
 RUN pip install --no-cache-dir -q -r requirements.txt
 COPY . /app
 

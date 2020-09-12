@@ -1,24 +1,31 @@
-from flask_login import UserMixin  # type: ignore
-from sqlalchemy.orm.exc import NoResultFound  # type: ignore
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, JSON  # type: ignore
+from sqlalchemy.orm import relationship  # type: ignore
 from sqlalchemy.sql import func  # type: ignore
-from typing import Optional
 
-from cotacol.extensions import db
+from cotacol.db import Base
 
 
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(128))
-    date_joined = db.Column(db.DateTime(timezone=True), default=func.now())
-    extra_data = db.Column(db.JSON)
+class User(Base):
+    __tablename__ = "users"
 
-    social_accounts = db.relationship("SocialAccount", back_populates="user", lazy="joined")
+    id = Column(Integer, primary_key=True)
+    username = Column(String(128))
+    bookmarks = Column(JSON, default=[])
+    climbed = Column(JSON, default=[])
+    date_joined = Column(DateTime(timezone=True), default=func.now())
+    is_staff = Column(Boolean(), default=False)
+    is_active = Column(Boolean(), default=True)
+
+    social_accounts = relationship("SocialAccount", back_populates="user", lazy="joined")
 
     def __str__(self) -> str:
         return self.username
 
+    def get_user_id(self):
+        return self.id
+
     @property
-    def name(self) -> str:
+    def full_name(self) -> str:
         athlete = self.social_accounts[0].extra_data["athlete"]
         return f'{athlete["firstname"]} {athlete["lastname"]}'
 
@@ -26,48 +33,15 @@ class User(db.Model, UserMixin):
     def profile_picture(self) -> str:
         return self.social_accounts[0].extra_data["athlete"]["profile"]
 
-    def is_active(self) -> bool:
-        return True
 
-    def as_dict(self) -> dict:
-        d = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        return d
+class SocialAccount(Base):
+    __tablename__ = "social_accounts"
 
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey(User.id))
+    provider = Column(String(32))
+    uid = Column(String(191))
+    extra_data = Column(JSON)
+    last_login = Column(DateTime(timezone=True), default=func.now())
 
-class SocialAccount(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
-    provider = db.Column(db.String(32))
-    uid = db.Column(db.String(191))
-    extra_data = db.Column(db.JSON)
-    last_login = db.Column(db.DateTime(timezone=True), default=func.now())
-
-    user = db.relationship("User", back_populates="social_accounts")
-
-
-def user_from_token(token: dict, provider: str = "strava") -> Optional[User]:
-    if provider == "strava":
-        uid, username = str(token["athlete"]["id"]), str(token["athlete"]["username"])
-    else:
-        return None
-
-    try:
-        account = SocialAccount.query.filter(SocialAccount.provider == provider, SocialAccount.uid == uid).one()
-        account.last_login = func.now()
-        account.user.username = username
-        account.extra_data = token
-    except NoResultFound:
-        account = None
-        db.session.add(
-            SocialAccount(
-                user=User(username=username), provider=provider, uid=uid, extra_data=token, last_login=func.now(),
-            )
-        )
-
-    db.session.flush()
-    db.session.commit()
-
-    if not account:
-        account = SocialAccount.query.filter(SocialAccount.provider == provider, SocialAccount.uid == uid).one()
-
-    return account.user
+    user = relationship("User", back_populates="social_accounts")

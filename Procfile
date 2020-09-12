@@ -1,1 +1,1 @@
-web: gunicorn -b :5000 cotacol.wsgi:app
+web: uvicorn cotacol.main:app --port 5000

@@ -1,59 +1,59 @@
 import polyline  # type: ignore
 
-from flask import url_for
 from geojson import Feature, LineString  # type: ignore
-from typing import List, Optional, Tuple
+from sqlalchemy import Column, Float, SmallInteger, String, JSON  # type: ignore
+from typing import Optional
 
-from cotacol.extensions import db
+from cotacol.db import Base
+
+#  from cotacol.routers.climbs import router
 
 
-class Climb(db.Model):
-    id = db.Column(db.SmallInteger, primary_key=True)
-    name = db.Column(db.String(160))
-    city = db.Column(db.String(160))
-    province = db.Column(db.String(160))
-    cotacol_points = db.Column(db.SmallInteger)
-    distance = db.Column(db.SmallInteger)
-    elevation_diff = db.Column(db.SmallInteger)
-    avg_grade = db.Column(db.Float(precision=3))
-    gpx_points = db.Column(db.JSON)
-    extra_data = db.Column(db.JSON)
+class Climb(Base):
+    __tablename__ = "climbs"
 
-    @property
-    def coordinates(self) -> Optional[List[Tuple[float, float, float]]]:
-        if not self.gpx_points or not len(self.gpx_points):
-            return None
-
-        return [(c["lat"], c["lon"], c["ele"]) for c in self.gpx_points]
+    id = Column(SmallInteger, primary_key=True)
+    name = Column(String(160))
+    city = Column(String(160))
+    province = Column(String(160))
+    cotacol_points = Column(SmallInteger)
+    distance = Column(SmallInteger)
+    elevation_diff = Column(SmallInteger)
+    avg_grade = Column(Float(precision=3))
+    coordinates = Column(JSON)
+    extra_data = Column(JSON)
 
     @property
     def polyline(self) -> Optional[str]:
-        return polyline.encode(self.coordinates) if self.coordinates else None
+        if not self.coordinates or not len(self.coordinates):
+            return None
+
+        return polyline.encode([(c["lat"], c["lon"], c["ele"]) for c in self.coordinates])
 
     @property
     def url(self) -> str:
-        return url_for("api.climb_detail", climb_id=self.id, _external=True)
+        return "http://127.0.0.1:8000/docs/"
+        # return router.url_path_for("climb_detail", climb_id=self.id)
 
     def as_dict(self, *, exclude_coordinates: bool = False) -> dict:
         d = {c.name: getattr(self, c.name) for c in self.__table__.columns}
         d["polyline"] = self.polyline
         d["url"] = self.url
 
-        if not exclude_coordinates:
-            d["coordinates"] = self.coordinates
-
-        d.pop("gpx_points")
+        if exclude_coordinates:
+            d.pop("coordinates")
 
         return d
 
     def as_feature(self) -> Feature:
         geometry = []
 
-        if self.gpx_points and len(self.gpx_points):
-            geometry = LineString([(c["lon"], c["lat"], c["ele"]) for c in self.gpx_points])
+        if self.coordinates and len(self.coordinates):
+            geometry = LineString([(c["lon"], c["lat"], c["ele"]) for c in self.coordinates])
 
         properties = self.as_dict(exclude_coordinates=True)
         properties.pop("id")
         properties.pop("polyline")
         properties.pop("url")
+
         return Feature(id=self.id, geometry=geometry, properties=properties)

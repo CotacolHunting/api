@@ -1,5 +1,5 @@
-Cotacol
-=======
+COTACOL API
+===========
 
 [![github-tests-badge]][github-tests]
 [![github-mypy-badge]][github-mypy]
@@ -7,13 +7,12 @@ Cotacol
 [![license-badge]](LICENSE)
 
 
-The Cotacol API/website uses [Flask][flask].
+The COTACOL API uses [FastAPI][fastapi].
 
 Application dependencies
 ------------------------
 
-The application uses [Pipenv][pipenv] to manage Python packages. While in development, you will need to install
-all dependencies (includes packages like `debug_toolbar`):
+The application uses [Pipenv][pipenv] to manage Python packages:
 
     $ pipenv shell
     $ pipenv install --dev
@@ -25,7 +24,7 @@ Update dependencies (and manually update `requirements.txt`):
 Running the server
 ------------------
 
-    $ flask run
+    $ uvicorn cotacol.main:app
 
 There is an environment variable called `FLASK_ENV` that has to be set to `development`
 if you want to run Flask in debug mode with autoreload
@@ -45,10 +44,11 @@ Tab size is 4 spaces. Maximum line length is 120. You should run `black` before 
 
 [codecov]: https://codecov.io/gh/eillarra/cotacol
 [codecov-badge]: https://codecov.io/gh/eillarra/cotacol/branch/master/graph/badge.svg
-[flask]: https://flask.pocoo.org/
 [github-mypy]: https://github.com/eillarra/cotacol/actions?query=workflow%3A%22mypy%22
 [github-mypy-badge]: https://github.com/eillarra/cotacol/workflows/mypy/badge.svg
 [github-tests]: https://github.com/eillarra/cotacol/actions?query=workflow%3A%22tests%22
 [github-tests-badge]: https://github.com/eillarra/cotacol/workflows/tests/badge.svg
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+
+[fastapi]: https://fastapi.tiangolo.com/
 [pipenv]: https://docs.pipenv.org/#install-pipenv-today
