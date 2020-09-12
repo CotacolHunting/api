@@ -32,8 +32,8 @@ class Climb(Base):
 
     @property
     def url(self) -> str:
-        return "http://127.0.0.1:8000/docs/"
-        # return router.url_path_for("climb_detail", climb_id=self.id)
+        # TODO: find a way of using `router.url_path_for()`
+        return f"https://api.cotacol.cc/v1/climbs/{self.id}/"
 
     def as_dict(self, *, exclude_coordinates: bool = False) -> dict:
         d = {c.name: getattr(self, c.name) for c in self.__table__.columns}
