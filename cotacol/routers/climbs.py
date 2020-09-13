@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Security, status
-from fastapi.responses import UJSONResponse
+from fastapi import APIRouter, Depends, Security
+from fastapi.responses import JSONResponse
 from geojson import FeatureCollection  # type: ignore
 from sqlalchemy.orm import Session  # type: ignore
 from typing import List
@@ -18,7 +18,7 @@ async def geojson(db: Session = Depends(get_db)):
     Returns a GeoJSON response with all COTACOL climbs as features.
     """
     geojson = FeatureCollection([climb.as_feature() for climb in crud.get_climbs(db)])
-    return UJSONResponse(content=geojson, media_type="application/geo+json")
+    return JSONResponse(content=geojson, media_type="application/geo+json")
 
 
 @router.get("/", response_model=List[schemas.ClimbList], summary="List all climbs")

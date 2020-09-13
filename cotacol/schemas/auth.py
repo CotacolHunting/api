@@ -4,7 +4,7 @@ from typing import List, Literal
 
 Provider = Literal["strava"]
 
-Scope = Literal["me", "read", "write"]
+Scope = Literal["read", "write"]
 
 
 class Token(BaseModel):

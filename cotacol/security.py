@@ -12,14 +12,10 @@ from cotacol.models import User
 
 
 oauth2_scheme = OAuth2AuthorizationCodeBearer(
-    authorizationUrl="[client]",
+    authorizationUrl="/login/{provider}/",
     tokenUrl="/auth/token/",
-    scopes={"read": "Read COTACOL information.", "write": "Read or write COTACOL information.",},
+    scopes={"read": "Read COTACOL information.", "write": "Read or write COTACOL information."},
 )
-
-
-def fake_decode_token(token):
-    return User(username=token + "fakedecoded", full_name="John Doe")
 
 
 def get_user_from_token(

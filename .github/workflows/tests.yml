@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
       - name: Test with pytest
         run: |
-          pip install pytest pytest-cov gpxpy lxml
+          pip install pytest pytest-cov requests
           pytest --cov=cotacol --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
