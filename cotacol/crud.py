@@ -1,4 +1,3 @@
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session  # type: ignore
 from sqlalchemy.orm.exc import NoResultFound  # type: ignore
 from sqlalchemy.sql import func  # type: ignore
@@ -32,7 +31,6 @@ def create_user_for_provider(db: Session, res: dict, provider: str = "strava") -
             )
         )
 
-    db.flush()
     db.commit()
 
     if not account:
@@ -44,7 +42,6 @@ def create_user_for_provider(db: Session, res: dict, provider: str = "strava") -
 def update_user(db: Session, user_id: int, data: schemas.UserUpdate):
     user = get_user(db, user_id)
     _patch(user, data.dict(exclude_unset=True))
-    db.flush()
     db.commit()
     return user
 
@@ -61,9 +58,16 @@ def get_user(db: Session, user_id: int):
     return db.query(models.User).get(user_id)
 
 
+def get_climbs(db: Session):
+    return db.query(models.Climb).all()
+
+
 def get_climb(db: Session, climb_id: int):
     return db.query(models.Climb).get(climb_id)
 
 
-def get_climbs(db: Session):
-    return db.query(models.Climb).all()
+def update_climb(db: Session, climb_id: int, data: schemas.ClimbUpdate):
+    climb = get_climb(db, climb_id)
+    _patch(climb, data.dict(exclude_unset=True))
+    db.commit()
+    return climb

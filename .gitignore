@@ -12,6 +12,4 @@ __pycache__
 .webassets-cache
 htmlcov
 test-reports
-
-__bundle__
-cotacol.geojson
+test.db

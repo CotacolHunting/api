@@ -34,14 +34,21 @@ class ClimbBase(BaseModel):
     extra_data: Optional[ClimbExtraData]
 
 
-class ClimbUpdate(ClimbBase):
-    pass
+class ClimbUpdate(BaseModel):
+    name: Optional[str] = None
+    city: Optional[str] = None
+    province: Optional[str] = None
+    cotacol_points: Optional[PositiveInt] = None
+    distance: Optional[PositiveInt] = None
+    elevation_diff: Optional[PositiveInt] = None
+    avg_grade: Optional[float] = None
+    extra_data: Optional[ClimbExtraData]
 
 
 class ClimbList(ClimbBase):
     id: CotacolId
     url: HttpUrl
-    polyline: str
+    polyline: Optional[str] = None
 
     class Config:
         orm_mode = True

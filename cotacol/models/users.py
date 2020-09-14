@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, JSON  # type: ignore
 from sqlalchemy.orm import relationship  # type: ignore
 from sqlalchemy.sql import func  # type: ignore
+from typing import Optional
 
 from cotacol.db import Base
 
@@ -18,19 +19,17 @@ class User(Base):
 
     social_accounts = relationship("SocialAccount", back_populates="user", lazy="joined")
 
-    def __str__(self) -> str:
-        return self.username
-
-    def get_user_id(self):
-        return self.id
-
     @property
-    def full_name(self) -> str:
+    def full_name(self) -> Optional[str]:
+        if not self.social_accounts:
+            return None
         athlete = self.social_accounts[0].extra_data["athlete"]
         return f'{athlete["firstname"]} {athlete["lastname"]}'
 
     @property
-    def profile_picture(self) -> str:
+    def profile_picture(self) -> Optional[str]:
+        if not self.social_accounts:
+            return None
         return self.social_accounts[0].extra_data["athlete"]["profile"]
 
 

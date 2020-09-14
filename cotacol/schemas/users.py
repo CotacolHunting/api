@@ -6,8 +6,8 @@ from .climbs import CotacolId
 
 
 class UserBase(BaseModel):
-    bookmarks: Set[CotacolId] = {}
-    climbed: Set[CotacolId] = {}
+    bookmarks: Set[CotacolId] = set()
+    climbed: Set[CotacolId] = set()
 
 
 class UserUpdate(UserBase):
@@ -16,8 +16,8 @@ class UserUpdate(UserBase):
 
 class User(UserBase):
     username: str
-    full_name: str
-    profile_picture: str
+    full_name: Optional[str]
+    profile_picture: Optional[str]
     date_joined: Optional[datetime]
     is_staff: bool
 

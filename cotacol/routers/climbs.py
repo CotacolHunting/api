@@ -45,9 +45,8 @@ async def update_climb(
     current_user: models.User = Security(get_user_from_token, scopes=["write"]),
     db: Session = Depends(get_db),
 ):
-    stored = models.Climb(**crud.get_climb(db, climb_id))
-    updated = stored.copy(update=climb.dict(exclude_unset=True))
-    """update_item_encoded = jsonable_encoder(item)
-    items[item_id] = update_item_encoded
-    return update_item_encoded"""
-    return updated
+    """
+    Updates COTACOL climb information (authenticated with write scope).
+    """
+    updated_climb = crud.update_climb(db, climb_id, climb)
+    return updated_climb
