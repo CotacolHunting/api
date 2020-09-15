@@ -55,6 +55,8 @@ def climb():
                 distance=600,
                 elevation_diff=65,
                 avg_grade=10.8,
+                surface="cobbles",
+                aliases=[],
             )
         )
         db.commit()

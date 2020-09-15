@@ -18,7 +18,7 @@ class User(UserBase):
     username: str
     full_name: Optional[str]
     profile_picture: Optional[str]
-    date_joined: Optional[datetime]
+    date_joined: datetime
     is_staff: bool
 
     class Config:

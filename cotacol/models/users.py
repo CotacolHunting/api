@@ -11,8 +11,8 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     username = Column(String(128))
-    bookmarks = Column(JSON, default=[])
-    climbed = Column(JSON, default=[])
+    bookmarks = Column(JSON, default=list)
+    climbed = Column(JSON, default=list)
     date_joined = Column(DateTime(timezone=True), default=func.now())
     is_staff = Column(Boolean(), default=False)
     is_active = Column(Boolean(), default=True)

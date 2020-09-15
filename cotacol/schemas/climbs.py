@@ -18,9 +18,7 @@ class StravaSegment(BaseModel):
     confidence: Literal["correct", "toimprove", "toreview", "missing"]
 
 
-class ClimbExtraData(BaseModel):
-    aliases: List[str] = []
-    strava_segment: Optional[StravaSegment] = None
+Surface = Literal["tarmac", "cobbles", "mixed"]
 
 
 class ClimbBase(BaseModel):
@@ -31,10 +29,12 @@ class ClimbBase(BaseModel):
     distance: PositiveInt
     elevation_diff: PositiveInt
     avg_grade: float
-    extra_data: Optional[ClimbExtraData]
+    surface: Surface
+    aliases: List[str] = []
+    strava_segment: Optional[StravaSegment] = None
 
 
-class ClimbUpdate(BaseModel):
+class ClimbUpdate(ClimbBase):
     name: Optional[str] = None
     city: Optional[str] = None
     province: Optional[str] = None
@@ -42,7 +42,7 @@ class ClimbUpdate(BaseModel):
     distance: Optional[PositiveInt] = None
     elevation_diff: Optional[PositiveInt] = None
     avg_grade: Optional[float] = None
-    extra_data: Optional[ClimbExtraData]
+    surface: Optional[Surface] = None
 
 
 class ClimbList(ClimbBase):

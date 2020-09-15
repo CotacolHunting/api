@@ -20,8 +20,10 @@ class Climb(Base):
     distance = Column(SmallInteger)
     elevation_diff = Column(SmallInteger)
     avg_grade = Column(Float(precision=3))
-    coordinates = Column(JSON, default=[])
-    extra_data = Column(JSON, default=dict)
+    coordinates = Column(JSON, default=list)
+    surface = Column(String(30))
+    aliases = Column(JSON, default=list)
+    strava_segment = Column(JSON, default=None)
 
     @property
     def polyline(self) -> Optional[str]:
